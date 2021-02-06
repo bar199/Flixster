@@ -31,6 +31,7 @@ public class DetailActivity extends YouTubeBaseActivity {
     TextView tvOverview;
     RatingBar ratingBar;
     YouTubePlayerView youTubePlayerView;
+    TextView tvPopularity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,13 @@ public class DetailActivity extends YouTubeBaseActivity {
         tvOverview = findViewById(R.id.tvOverview);
         ratingBar = findViewById(R.id.ratingBar);
         youTubePlayerView = findViewById(R.id.player);
+        tvPopularity = findViewById(R.id.tvPopularity);
 
         Movie movie = Parcels.unwrap(getIntent().getParcelableExtra("movie"));
         tvTitle.setText(movie.getTitle());
         tvOverview.setText(movie.getOverview());
         ratingBar.setRating((float) movie.getRating());
+        tvPopularity.setText("Popularity: " + movie.getPopularity());
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(String.format(VIDEOS_URL, movie.getMovieID()), new JsonHttpResponseHandler() {
@@ -58,7 +61,7 @@ public class DetailActivity extends YouTubeBaseActivity {
                     }
                     String youTubeKey = results.getJSONObject(0).getString("key");
                     Log.d("DetailActivity", youTubeKey);
-                    initializeYouTube(youTubeKey);
+                    initializeYouTube(youTubeKey, movie.getRating());
                 } catch (JSONException e) {
                     Log.e("DetailActivity", "Failed to parse JSON");
                     e.printStackTrace();
@@ -73,12 +76,17 @@ public class DetailActivity extends YouTubeBaseActivity {
         });
     }
 
-    private void initializeYouTube(final String youTubeKey) {
+    private void initializeYouTube(final String youTubeKey, double rating) {
         youTubePlayerView.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 Log.d("DetailActivity", "onInitializationSuccess");
-                youTubePlayer.cueVideo(youTubeKey);
+                if (rating > 5) {
+                    youTubePlayer.loadVideo(youTubeKey);
+                } else {
+                    youTubePlayer.cueVideo(youTubeKey);
+                }
+
             }
 
             @Override

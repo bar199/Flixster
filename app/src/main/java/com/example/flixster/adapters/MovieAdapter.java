@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.target.Target;
 import com.example.flixster.DetailActivity;
 import com.example.flixster.R;
 import com.example.flixster.models.Movie;
@@ -23,6 +25,9 @@ import com.example.flixster.models.Movie;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
@@ -83,12 +88,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 // Then imageUrl = backdrop image
                 imageUrl = movie.getBackdropPath();
+
+                Glide.with(context).load(imageUrl)
+                        .transform(new RoundedCorners(20))
+                        .override(Target.SIZE_ORIGINAL, 550)
+                        .into(ivPoster);
             } else {
                 // Else imageUrl = poster image
                 imageUrl = movie.getPosterPath();
-            }
 
-            Glide.with(context).load(imageUrl).into(ivPoster);
+                Glide.with(context).load(imageUrl)
+                        .transform(new RoundedCorners(30))
+                        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .into(ivPoster);
+            }
 
             // 1. Register click listener on the whole row
             container.setOnClickListener(v -> {
