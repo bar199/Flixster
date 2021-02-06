@@ -26,7 +26,8 @@ Flixster is an app that allows users to browse movies from the [The Movie Databa
 
 ### Notes
 
-Describe any challenges encountered while building the app.
+- While using Glide, padding appeared on images and Slack discussions only helped partially
+- Pushing commits as it tried to include the GIF which caused the push to stall
 
 ## Open-source libraries used
 - [Android Async HTTP](https://github.com/codepath/CPAsyncHttpClient) - Simple asynchronous HTTP requests with JSON parsing
